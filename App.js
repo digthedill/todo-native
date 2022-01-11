@@ -11,7 +11,6 @@ export default function App() {
     { timestamp: 1, task: "do more arounds the house" },
     { timestamp: 2, task: "clean the dog" },
   ])
-
   const handleNewTask = () => {
     //grab date time
     const timestamp = new Date()
@@ -35,7 +34,7 @@ export default function App() {
         <FlatList
           data={tasks}
           renderItem={({ item }) => (
-            <Task key={item.timestamp} task={item.task} />
+            <Task key={item.timestamp} item={item} setTasks={setTasks} />
           )}
         />
       </View>
@@ -53,16 +52,18 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "98%",
-    marginTop: "1rem",
+    padding: "5%",
+    marginTop: "5%",
     alignItems: "center",
   },
   tasksContainer: {
-    padding: "1rem",
-    flex: 4,
+    paddingLeft: "5%",
   },
   input: {
-    padding: "1rem",
-    margin: "0.2rem",
+    padding: "3%",
+    margin: "1%",
+    borderWidth: 1,
+    borderRadius: 10,
     width: "80%",
   },
   btn: {
