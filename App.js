@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, View, FlatList, TextInput, Button } from "react-native"
 
@@ -11,13 +11,14 @@ export default function App() {
     { timestamp: 1, task: "do more arounds the house" },
     { timestamp: 2, task: "clean the dog" },
   ])
+
   const handleNewTask = () => {
     //grab date time
     const timestamp = new Date()
     setTasks((arr) => [...arr, { timestamp, task: text }])
     setText("")
   }
-
+  console.log(tasks)
   return (
     <View style={styles.container}>
       <Header />
@@ -34,7 +35,12 @@ export default function App() {
         <FlatList
           data={tasks}
           renderItem={({ item }) => (
-            <Task key={item.timestamp} item={item} setTasks={setTasks} />
+            <Task
+              key={item.timestamp}
+              item={item}
+              setTasks={setTasks}
+              tasks={tasks}
+            />
           )}
         />
       </View>
