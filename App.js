@@ -37,7 +37,7 @@ export default function App() {
             <Task key={item.timestamp} item={item} setTasks={setTasks} />
           )}
         />
-      </View>
+      </View>zz
       <StatusBar style="auto" />
     </View>
   )
