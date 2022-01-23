@@ -1,8 +1,37 @@
 import { useState } from "react"
+import { useMutation } from "urql"
 import { Button, View, StyleSheet, Modal, Text } from "react-native"
 import { TextInput } from "react-native"
 import Header from "../components/Header"
 import modalStyle from "../styles/modal"
+
+const loginMutation = `
+    mutation($username: String, $password: String!){
+        login(username: $username, password: $password){
+            token
+            user {
+                id
+                username
+            }
+        }
+    }
+`
+const registrationMutation = `
+    mutation($name: String!, $email: String!, $username: String!, $password: String!){
+        signup(
+            username: $username,
+            name: $name,
+            email: $email,
+            password: $password
+        ){
+            token
+            user {
+                id
+                username
+            }
+        }
+    }
+`
 
 const WelcomeScreen = ({navigation}) => {
     const [showModal, setShowModal] = useState(false)
@@ -17,13 +46,28 @@ const WelcomeScreen = ({navigation}) => {
         password: ''
     })
     const [loginOrRegister, setLoginOrRegister] = useState('login')
+    const [loginRes, loginUpdate] = useMutation(loginMutation)
+    const [registerRes, registerUpdate] = useMutation(registrationMutation)
 
 
-    const sendRegistration = () => {
-        console.log(register)
+
+    const sendRegistration = async () => {
+        const {data} = await registerUpdate(register)
+        const token = data.signup.token
+        const user = data.signup.user
+        console.log({
+            token,
+            user
+        })
     }
-    const sendLogin = () => {
-        console.log(login)
+    const sendLogin = async () => {
+        const {data} = await loginUpdate(login)
+        const token = data.login.token
+        const user = data.login.user
+        console.log({
+            token,
+            user
+        })
     }
 
     const LoginComponent = (
@@ -123,7 +167,8 @@ const styles = StyleSheet.create({
     },
     button: {
         marginBottom: 10,
-        marginTop: 10
+        marginTop: 10,
+        padding: 10
     },
     title: {
         fontSize: 50
