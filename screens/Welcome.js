@@ -5,6 +5,14 @@ import { TextInput } from "react-native"
 import Header from "../components/Header"
 import modalStyle from "../styles/modal"
 
+/**
+ * TODO:
+ * 1) persit user token in application
+ * 2) show data dynamically in app
+ */
+
+
+
 const loginMutation = `
     mutation($username: String, $password: String!){
         login(username: $username, password: $password){
