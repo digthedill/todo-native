@@ -1,13 +1,10 @@
-import { useState } from "react"
-import { StatusBar } from "expo-status-bar"
+import { NavigationContainer } from '@react-navigation/native';
 import { createClient, Provider } from "urql"
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import TodoScreen from './screens/Todo';
+import WelcomeScreen from './screens/Welcome'
 
-import { StyleSheet, View} from "react-native"
-
-import Header from "./components/Header"
-import TaskContainer from "./components/TaskContainer"
-import TaskInput from "./components/TaskInput"
-
+const Stack = createNativeStackNavigator()
 
 export default function App() {
 
@@ -18,19 +15,18 @@ export default function App() {
 
   return (
     <Provider value={client}>
-      <View style={styles.container}>
-      <Header />
-      <TaskInput />
-      <TaskContainer/>
-      <StatusBar style="auto" />
-    </View>
+      <NavigationContainer>
+        <Stack.Navigator>
+        <Stack.Screen 
+            name="Welcome"
+            component={WelcomeScreen}/>
+          <Stack.Screen
+            name="Todo"
+            component={TodoScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    justifyContent: "flex-start",
-  }
-})
+
