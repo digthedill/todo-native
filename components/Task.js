@@ -1,26 +1,41 @@
 import { useState } from "react"
-import { Button, StyleSheet, Text, View } from "react-native"
+import { useMutation } from "urql"
+import { Modal, Alert, Pressable, StyleSheet, Text, View, Button } from "react-native"
 import { CheckBox } from "react-native-elements"
 
-const Task = (props) => {
-  const { setTasks, item, tasks } = props
-  const [complete, setComplete] = useState(false)
-
-  const removeTask = () => {
-    //on swipe right trigger method
-    setTasks((arr) => arr.filter((task) => task.timestamp !== item.timestamp))
-  }
-
-  const completeTask = () => {
-    setComplete(!complete)
-    if (complete === false) {
-      const reorderedList = array_move(
-        tasks,
-        tasks.indexOf(item),
-        tasks.length - 1
-      )
-      setTasks(reorderedList)
+const editTask = `
+  mutation($id: Int!, $completed: Boolean){
+    editTask(id: $id, completed: $completed){
+      id
     }
+  }`
+
+const deleteTask = `
+  mutation($id: Int!){
+    deleteTask(id: $id){
+      id
+    }
+  }`
+
+const Task = (props) => {
+  const [modalVisible, setModalVisible] = useState(false)
+  const { item } = props
+  const complete = item.completed
+  const [editRes, editTaskMutation] = useMutation(editTask)
+  const [deleteRes, deleteTaskMutation] = useMutation(deleteTask)
+
+  const completeTask = async () => {
+    const payload = {
+      id: item.id,
+      completed: complete ? false : true
+    }
+    await editTaskMutation(payload)
+       
+  }
+  const handleDeleteTask = async () => {
+    const payload = {id: item.id}
+    await deleteTaskMutation(payload)
+    setModalVisible(false)
   }
 
   const completedBackground = () =>
@@ -29,23 +44,35 @@ const Task = (props) => {
   const completedColor = () =>
     complete ? { color: "#999" } : { color: "#efefef" }
 
-  const array_move = (arr, old_index, new_index) => {
-    if (new_index >= arr.length) {
-      var k = new_index - arr.length + 1
-      while (k--) {
-        arr.push(undefined)
-      }
-    }
-    arr.splice(new_index, 0, arr.splice(old_index, 1)[0])
-    return arr // for testing
-  }
-
   return (
-    <View style={[styles.container, completedBackground()]}>
-      <Text style={[styles.task, completedColor()]}>{item.task}</Text>
-      <CheckBox checked={complete} onPress={completeTask} />
-      {/* <Button title="x" onPress={removeTask} /> */}
-    </View>
+    <Pressable onLongPress={() => setModalVisible(true)}>
+      <View style={[styles.container, completedBackground()]}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text>
+              Ready to delete the task?
+            </Text>
+            <View style={styles.modalActions}>
+              <Button title="Delete" color={'#f44336'} onPress={handleDeleteTask}/>
+              <Button title="Cancel" onPress={() => setModalVisible(false)}/>
+            </View>
+          </View>
+        </View>
+       
+        </Modal>
+        <Text style={[styles.task, completedColor()]}>{item.task}</Text>
+        <CheckBox checked={complete} onPress={completeTask} />
+      </View>
+    </Pressable>
   )
 }
 
@@ -63,6 +90,32 @@ const styles = StyleSheet.create({
   task: {
     fontSize: 16,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 45,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalActions: {
+    marginTop: 10, 
+    flexDirection: 'row',
+    gap: 10
+  }
 })
 
 export default Task
