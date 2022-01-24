@@ -59,8 +59,6 @@ const WelcomeScreen = ({navigation}) => {
     const [loginRes, loginUpdate] = useMutation(loginMutation)
     const [registerRes, registerUpdate] = useMutation(registrationMutation)
 
-
-
     const sendRegistration = async () => {
         const {data} = await registerUpdate(registerPayload)
         const token = data.signup.token
@@ -79,8 +77,6 @@ const WelcomeScreen = ({navigation}) => {
                 user,
                 token
             })
-            //send to context api
-            //reroute to authenticated section
         } catch(err) {
             console.log(err.message)
         }

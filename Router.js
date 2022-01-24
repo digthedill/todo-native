@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator()
 
 const AppStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
          <Stack.Screen 
             name="Welcome"
             component={WelcomeScreen}/>
@@ -19,7 +19,7 @@ const AppStack = () => {
 
 const AuthStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen
             name="Todo"
             component={TodoScreen} />
@@ -30,9 +30,7 @@ const AuthStack = () => {
 export const Router = () =>{
     
     const ctx = useContext(AuthContext)
-    console.log({ctx})
-    let auth = false
-    
+    let auth = !!ctx.authState?.token
     return auth ? <AuthStack /> : <AppStack />
 
 }

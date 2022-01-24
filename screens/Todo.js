@@ -7,12 +7,14 @@ import TaskInput from "../components/TaskInput"
 
 const TodoScreen = () => {
 
-    return (<View style={styles.container}>
+    return (
+      <View style={styles.container}>
         <Header />
         <TaskInput />
         <TaskContainer/>
         <StatusBar style="auto" />
-      </View>)
+      </View>
+      )
 }
 const styles = StyleSheet.create({
     container: {
