@@ -5,16 +5,17 @@ import { TextInput } from "react-native"
 import Header from "../components/Header"
 import modalStyle from "../styles/modal"
 
+import { useContext } from "react"
+import { AuthContext } from "../context/auth"
+
 /**
  * TODO:
  * 1) persit user token in application
  * 2) show data dynamically in app
  */
 
-
-
 const loginMutation = `
-    mutation($username: String, $password: String!){
+    mutation($username: String!, $password: String!){
         login(username: $username, password: $password){
             token
             user {
@@ -42,12 +43,13 @@ const registrationMutation = `
 `
 
 const WelcomeScreen = ({navigation}) => {
+    const ctx = useContext(AuthContext)
     const [showModal, setShowModal] = useState(false)
-    const [login, setLogin] = useState({
+    const [loginPayload, setLoginPayload] = useState({
         username: '',
         password: ''
     })
-    const [register, setRegister] = useState({
+    const [registerPayload, setRegisterPayload] = useState({
         name: '',
         email: '',
         username: '',
@@ -60,22 +62,28 @@ const WelcomeScreen = ({navigation}) => {
 
 
     const sendRegistration = async () => {
-        const {data} = await registerUpdate(register)
+        const {data} = await registerUpdate(registerPayload)
         const token = data.signup.token
         const user = data.signup.user
-        console.log({
-            token,
-            user
+        ctx.authContext.signup({
+            user, 
+            token
         })
     }
     const sendLogin = async () => {
-        const {data} = await loginUpdate(login)
-        const token = data.login.token
-        const user = data.login.user
-        console.log({
-            token,
-            user
-        })
+        try{
+            const {data} = await loginUpdate(loginPayload)
+            const token = data.login.token
+            const user = data.login.user
+            ctx.authContext.signIn({
+                user,
+                token
+            })
+            //send to context api
+            //reroute to authenticated section
+        } catch(err) {
+            console.log(err.message)
+        }
     }
 
     const LoginComponent = (
@@ -83,14 +91,14 @@ const WelcomeScreen = ({navigation}) => {
         <View style={modalStyle.modalView}>
         <Text style={modalStyle.title}>Login</Text>
          <TextInput
-            onChangeText={(text) => setLogin({...login, username: text})}
-            value={login.username}
+            onChangeText={(text) => setLoginPayload({...loginPayload, username: text})}
+            value={loginPayload.username}
             placeholder="cool_guy"
             style={styles.input}
         />
          <TextInput
-            onChangeText={(text) => setLogin({...login, password: text})}
-            value={login.password}
+            onChangeText={(text) => setLoginPayload({...loginPayload, password: text})}
+            value={loginPayload.password}
             secureTextEntry={true}
             placeholder="password"
             style={styles.input}
@@ -107,26 +115,26 @@ const WelcomeScreen = ({navigation}) => {
         <View style={modalStyle.modalView}>
         <Text style={modalStyle.title}>Register</Text>
          <TextInput
-            onChangeText={(text) => setRegister({...register, name: text})}
-            value={register.name}
+            onChangeText={(text) => setRegisterPayload({...registerPayload, name: text})}
+            value={registerPayload.name}
             placeholder="Full Name"
             style={styles.input}
         />
          <TextInput
-            onChangeText={(text) => setRegister({...register, email: text})}
-            value={register.email}
+            onChangeText={(text) => setRegisterPayload({...registerPayload, email: text})}
+            value={registerPayload.email}
             placeholder="joe_shmo@example.com"
             style={styles.input}
         />
          <TextInput
-            onChangeText={(text) => setRegister({...register, username: text})}
-            value={register.username}
+            onChangeText={(text) => setRegisterPayload({...registerPayload, username: text})}
+            value={registerPayload.username}
             placeholder="username"
             style={styles.input}
         />
          <TextInput
-            onChangeText={(text) => setRegister({...register, password: text})}
-            value={register.password}
+            onChangeText={(text) => setRegisterPayload({...registerPayload, password: text})}
+            value={registerPayload.password}
             secureTextEntry={true}
             placeholder="password"
             style={styles.input}
