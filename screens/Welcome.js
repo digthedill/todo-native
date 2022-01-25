@@ -61,9 +61,10 @@ const WelcomeScreen = ({navigation}) => {
 
     const sendRegistration = async () => {
         const {data} = await registerUpdate(registerPayload)
+        console.log(data)
         const token = data.signup.token
         const user = data.signup.user
-        ctx.authContext.signup({
+        ctx.authContext.signUp({
             user, 
             token
         })

@@ -19,7 +19,7 @@ const TaskContainer = () => {
     if (fetching) return <p>Loading...</p>;
     if (error) return <p>Oh no... {error.message}</p>;
 
-    return <View style={{ paddingLeft: "5%" }}>
+    return <View style={{ paddingLeft: "5%", height: '100%' }}>
     <FlatList
       data={data.tasks}
       renderItem={({ item }) => (

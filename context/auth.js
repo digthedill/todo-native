@@ -20,9 +20,6 @@ const AuthProvider = ({children}) => {
             } : {}
         }
     })
-
-    console.log(client)
-    
     const authContext = useMemo(() => ({
         signIn: async(foundUser) => {
             let token = foundUser.token
@@ -33,8 +30,8 @@ const AuthProvider = ({children}) => {
             dispatch({ type: 'LOGOUT' });
         },
         signUp: async (newUser) => {
-            let token = foundUser.token
-            let user = foundUser.user.username       
+            let token = newUser.token
+            let user = newUser.user.username       
             dispatch({ type: 'REGISTER', id: user, token: token });     
         
         },

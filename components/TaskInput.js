@@ -16,7 +16,6 @@ const TaskInput = () => {
     const handleNewTask = async () => {
         const payload = {task: text}
         const result = await update(payload)
-        console.log(result)
     }
 
     return (
